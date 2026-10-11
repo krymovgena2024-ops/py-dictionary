@@ -5,7 +5,7 @@ from collections.abc import Hashable
 
 @dataclass
 class Node:
-    key: Any
+    key: Hashable
     value: Any
     hash_node: int
 
@@ -43,7 +43,7 @@ class Dictionary:
             self,
             node: Node,
             initial_index: int,
-            key: Any,
+            key: Hashable,
             value: Any) -> None:
         capacity = len(self.hash_table)
         if self.hash_table[initial_index] is None:
