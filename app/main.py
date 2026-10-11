@@ -11,6 +11,7 @@ class Node:
 
 class Dictionary:
     def __init__(self) -> None:
+        self.length = 0
         self.hash_table = [None for _ in range(8)]
 
     def __setitem__(self, key: Any, value: Any) -> None:
@@ -20,6 +21,7 @@ class Dictionary:
         if len(self) >= int(capacity * (2 / 3)):
             new_hash_table = [None for _ in range(capacity * 2)]
             new_capacity = len(new_hash_table)
+            self.length = 0
             # этот цикл переносит все элементы
             # из self.hash_table в new_hash_table
             for item in self.hash_table:
@@ -27,6 +29,7 @@ class Dictionary:
                     initial_index = item.hash_node % new_capacity
                     if new_hash_table[initial_index] is None:
                         new_hash_table[initial_index] = item
+                        self.length += 1
                         continue
                     if new_hash_table[initial_index].key == item.key:
                         new_hash_table[initial_index].value = value
@@ -41,6 +44,7 @@ class Dictionary:
                             item_hash = item_hash >> 5
                             if new_hash_table[curent_index] is None:
                                 new_hash_table[curent_index] = item
+                                self.length += 1
                                 break
                             if new_hash_table[curent_index].key == key:
                                 new_hash_table[curent_index].value = item.value
@@ -50,6 +54,7 @@ class Dictionary:
             new_node = Node(key, value, hash_new_key)
             if new_hash_table[index_new_item] is None:
                 new_hash_table[index_new_item] = new_node
+                self.length += 1
                 self.hash_table = new_hash_table
                 return
             if new_hash_table[index_new_item].key == key:
@@ -66,6 +71,7 @@ class Dictionary:
                     perturb = perturb >> 5
                     if new_hash_table[current_index] is None:
                         new_hash_table[current_index] = new_node
+                        self.length += 1
                         break
                     if new_hash_table[current_index].key == key:
                         new_hash_table[current_index].value = value
@@ -86,6 +92,7 @@ class Dictionary:
         capacity = len(self.hash_table)
         if self.hash_table[initial_index] is None:
             self.hash_table[initial_index] = node
+            self.length += 1
             return
         if self.hash_table[initial_index].key == key:
             self.hash_table[initial_index].value = value
@@ -99,6 +106,7 @@ class Dictionary:
                 perturb = perturb >> 5
                 if self.hash_table[current_index] is None:
                     self.hash_table[current_index] = node
+                    self.length += 1
                     return
                 if self.hash_table[current_index].key == key:
                     self.hash_table[current_index].value = value
@@ -110,7 +118,7 @@ class Dictionary:
         initial_index = hash_key % capacity
         item = self.hash_table[initial_index]
         if item is None:
-            raise KeyError(key)
+            raise KeyError(f"Key '{key}' not found")
         if item.key == key:
             return item.value
         if item.key != key:
@@ -121,13 +129,9 @@ class Dictionary:
                 last_index = current_index
                 perturb = perturb >> 5
                 if self.hash_table[current_index] is None:
-                    raise KeyError(key)
+                    raise KeyError(f"Key '{key}' not found")
                 if self.hash_table[current_index].key == key:
                     return self.hash_table[current_index].value
 
     def __len__(self) -> Any:
-        quantity_nodes = 0
-        for element in self.hash_table:
-            if isinstance(element, Node):
-                quantity_nodes += 1
-        return quantity_nodes
+        return self.length
