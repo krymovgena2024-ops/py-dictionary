@@ -16,14 +16,10 @@ class Dictionary:
 
     def __setitem__(self, key: Any, value: Any) -> None:
         capacity = len(self.hash_table)
-        # этот if выполнится если количество
-        # элементов в self.hash_table равно 2/3
         if len(self) >= int(capacity * (2 / 3)):
             new_hash_table = [None for _ in range(capacity * 2)]
             new_capacity = len(new_hash_table)
             self.length = 0
-            # этот цикл переносит все элементы
-            # из self.hash_table в new_hash_table
             for item in self.hash_table:
                 if isinstance(item, Node):
                     initial_index = item.hash_node % new_capacity
